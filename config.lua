@@ -9,10 +9,14 @@ vim.cmd([[set relativenumber]])
 vim.cmd([[set termbidi]])
 lvim.keys.normal_mode["gt"] = ":BufferLineCycleNext<CR>"
 lvim.keys.normal_mode["gT"] = ":BufferLineCyclePrev<CR>"
-lvim.keys.normal_mode["<Tab>"] = ":bnext<CR>"
-lvim.keys.normal_mode["<S-Tab>"] = ":bprev<CR>"
+-- lvim.keys.normal_mode["<Tab>"] = ":bnext<CR>"
+-- lvim.keys.normal_mode["<S-Tab>"] = ":bprev<CR>"
+lvim.keys.normal_mode["<Tab>"] = ":BufferLineCycleNext<CR>"
+lvim.keys.normal_mode["<S-Tab>"] = ":BufferLineCyclePrev<CR>"
 lvim.keys.normal_mode["|"] = ":vsplit<CR>"
 lvim.keys.normal_mode["-"] = ":split<CR>"
+lvim.keys.normal_mode['<Leader><Leader>'] = ':lua require"telescope.builtin".find_files({ hidden = true})<CR>'
+
 local neotest_opts = {
     -- Can be a list of adapters like what neotest expects,
     -- or a list of adapter names,
@@ -161,6 +165,25 @@ lvim.plugins = {
         end,
     },
     {
+        "nvim-neotest/neotest-python",
+        config = function()
+            -- vim.api.nvim_command('cd /home/mahdi/all/repositories/github.com/autogpt/AutoGPT/autogpts/autogpt')
+
+            require("neotest").setup({
+                adapters = {
+                    require("neotest-python")({
+                        dap = {
+                            justMyCode = false,
+                            console = "integratedTerminal",
+                        },
+                        args = { "--log-level", "DEBUG", "-s" },
+                        runner = "pytest",
+                    })
+                }
+            })
+        end,
+    },
+    {
         "mfussenegger/nvim-dap",
         opts = dap_opts,
         keys = dap_keys,
@@ -226,6 +249,7 @@ require('dap').adapters.python = {
 require('dap').configurations.python = {
     {
         type = 'python',
+        justMyCode = false,
         request = 'launch',
         name = "Launch file",
         program = "${file}",
@@ -243,24 +267,24 @@ require('dap').configurations.python = {
 }
 
 local actions = require("telescope.actions")
-local trouble = require("trouble.providers.telescope")
+-- local trouble = require("trouble.providers.telescope")
 
-local telescope = require("telescope")
+-- local telescope = require("telescope")
 
-telescope.setup {
-    defaults = {
-        mappings = {
-            i = { ["<c-t>"] = trouble.open_with_trouble },
-            n = { ["<c-t>"] = trouble.open_with_trouble },
-        },
-    },
-}
+-- telescope.setup {
+--     defaults = {
+--         mappings = {
+--             i = { ["<c-t>"] = trouble.open_with_trouble },
+--             n = { ["<c-t>"] = trouble.open_with_trouble },
+--         },
+--     },
+-- }
 
 
-local null_ls = require("null-ls")
+-- local null_ls = require("null-ls")
 
-null_ls.setup({
-    sources = {
-        null_ls.builtins.formatting.black,
-    },
-})
+-- null_ls.setup({
+--     sources = {
+--         null_ls.builtins.formatting.black,
+--     },
+-- })
